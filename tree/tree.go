@@ -23,19 +23,10 @@ func (e ErrNotDir) Error() string {
 	return fmt.Sprintf("path is not a directory: %s", e.Path)
 }
 
-type OpType string
-
-const (
-	OpAdd     OpType = "add"
-	OpRemove  OpType = "remove"
-	OpReplace OpType = "replace"
-)
-
 // Op is an action performed on the tree
 type Op struct {
-	Type  OpType
-	Path  string
-	Value string
+	Path string
+	Type NodeType
 }
 
 // Persistence is how the tree records itself during actions to be restored from later
