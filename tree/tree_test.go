@@ -4,30 +4,34 @@ import (
 	"testing"
 
 	"github.com/ankored/tree-test/tree"
+	"github.com/google/go-cmp/cmp"
 )
 
-// func TestAddCreatesNode(t *testing.T) {
-// 	tr := tree.New(&tree.Node{
-// 		Type: tree.NodeTypeDir,
-// 	})
-//
-// 	tr.AddChild("/child", &tree.Node{
-// 		Type:  tree.NodeTypeVal,
-// 		Value: "something",
-// 	})
-//
-// 	if diff := cmp.Diff(&tree.Node{
-// 		Type: tree.NodeTypeDir,
-// 		Childs: map[string]*tree.Node{
-// 			"child": &tree.Node{
-// 				Type:  tree.NodeTypeVal,
-// 				Value: "something",
-// 			},
-// 		},
-// 	}, tr.Root); diff != "" {
-// 		t.Errorf("Tree mismatch (-want +got):\n%s", diff)
-// 	}
-// }
+func TestAddCreatesNode(t *testing.T) {
+	tr := tree.New(&tree.Node{
+		Type: tree.NodeTypeDir,
+	})
+
+	err := tr.AddChild("/child", &tree.Node{
+		Type:  tree.NodeTypeVal,
+		Value: "something",
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %s", err)
+	}
+
+	if diff := cmp.Diff(&tree.Node{
+		Type: tree.NodeTypeDir,
+		Childs: map[string]*tree.Node{
+			"child": &tree.Node{
+				Type:  tree.NodeTypeVal,
+				Value: "something",
+			},
+		},
+	}, tr.Root); diff != "" {
+		t.Errorf("Tree mismatch (-want +got):\n%s", diff)
+	}
+}
 
 func TestGetNode(t *testing.T) {
 	tr := tree.New(&tree.Node{

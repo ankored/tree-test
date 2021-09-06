@@ -75,11 +75,28 @@ func New(root *Node) *Tree {
 }
 
 // AddChild adds a node to the tree at the given path
-func (t *Tree) AddChild(path string, n *Node) {
+func (t *Tree) AddChild(path string, n *Node) error {
 	t.mu.Lock()
 	defer t.mu.Unlock()
 
-	// TODO: Get the parent node being referenced by the path
+	// New nodes can't have children
+	n.Childs = nil
+
+	// Get the parent node being referenced by the path to add to its map
+	parentPath := parentPath(path)
+	parent, _, err := t.traverse(parentPath)
+	if err != nil {
+		return fmt.Errorf("error traversing to path: %s", err)
+	}
+
+	if parent.Childs == nil {
+		// Initialize a map if there wasn't one before
+		parent.Childs = map[string]*Node{}
+	}
+
+	parent.Childs[lastInPath(path)] = n
+
+	return nil
 }
 
 func (t *Tree) Get(path string) (*Node, error) {
@@ -99,7 +116,7 @@ func (t *Tree) Get(path string) (*Node, error) {
 func (t *Tree) traverse(path string) (*Node, []*Node, error) {
 	var fn func([]string, int, *Node, []*Node) (*Node, []*Node, error)
 	fn = func(parts []string, i int, n *Node, traversed []*Node) (*Node, []*Node, error) {
-		if i >= len(parts) {
+		if i >= len(parts) || parts[i] == "" {
 			// This is base case, there's nothing more to recurse
 			return n, traversed, nil
 		}
@@ -131,7 +148,17 @@ func (t *Tree) traverse(path string) (*Node, []*Node, error) {
 }
 
 // Gets the parent node being referenced by the path
-func parentInPath(path string) string {
+func parentPath(path string) string {
+	path = strings.TrimSuffix(strings.TrimPrefix(path, "/"), "/")
 	parts := strings.Split(path, "/")
+
 	return "/" + strings.Join(parts[0:len(parts)-1], "/")
+}
+
+// Gets the last part of the apth
+func lastInPath(path string) string {
+	path = strings.TrimSuffix(strings.TrimPrefix(path, "/"), "/")
+	parts := strings.Split(path, "/")
+
+	return parts[len(parts)-1]
 }
