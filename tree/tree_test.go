@@ -13,7 +13,7 @@ func TestAddCreatesNode(t *testing.T) {
 		Type: tree.NodeTypeDir,
 	})
 
-	err := tr.AddChild("/child", &tree.Node{
+	err := tr.Put("/child", &tree.Node{
 		Type:  tree.NodeTypeVal,
 		Value: "something",
 	})
@@ -44,7 +44,7 @@ func TestAddRequiresParentToBeDir(t *testing.T) {
 		},
 	})
 
-	err := tr.AddChild("/child/grandchild", &tree.Node{
+	err := tr.Put("/child/grandchild", &tree.Node{
 		Type:  tree.NodeTypeVal,
 		Value: "something",
 	})
@@ -64,7 +64,7 @@ func TestAddRequiresAllParentsToExist(t *testing.T) {
 		},
 	})
 
-	err := tr.AddChild("/child/not-here/child", &tree.Node{
+	err := tr.Put("/child/not-here/child", &tree.Node{
 		Type:  tree.NodeTypeVal,
 		Value: "something",
 	})
@@ -89,7 +89,7 @@ func TestAddNilRemovesNode(t *testing.T) {
 		},
 	})
 
-	err := tr.AddChild("/child", nil)
+	err := tr.Put("/child", nil)
 	if err != nil {
 		t.Fatalf("unexpected error: %s", err)
 	}

@@ -26,7 +26,7 @@ func (e ErrNotDir) Error() string {
 // Op is an action performed on the tree
 type Op struct {
 	Path string
-	Type NodeType
+	Node *Node
 }
 
 // Persistence is how the tree records itself during actions to be restored from later
@@ -65,8 +65,8 @@ func New(root *Node) *Tree {
 	}
 }
 
-// AddChild adds a node to the tree at the given path
-func (t *Tree) AddChild(path string, n *Node) error {
+// Put adds a node to the tree at the given path or updates it (or removes)
+func (t *Tree) Put(path string, n *Node) error {
 	t.mu.Lock()
 	defer t.mu.Unlock()
 
