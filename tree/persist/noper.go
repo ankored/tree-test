@@ -14,9 +14,7 @@ func (NoopPersist) Record(tree.Op) error {
 
 func (NoopPersist) Restore() (*tree.Tree, error) {
 	// Does nothing, just return an empty tree
-	return tree.New(tree.Node{
-		Name:   "",
-		Childs: map[string]Node{},
-		Value:  "",
+	return tree.New(&tree.Node{
+		Childs: map[string]*tree.Node{},
 	}), nil
 }
