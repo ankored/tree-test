@@ -83,7 +83,7 @@ func (t *Tree) AddChild(path string, n *Node) error {
 	parentPath := parentPath(path)
 	parent, _, err := t.traverse(parentPath)
 	if err != nil {
-		return fmt.Errorf("error traversing to path: %w", err)
+		return fmt.Errorf("error traversing to path: %s", err)
 	}
 
 	// Parent must be a directory, otherwise adding child to a value node
